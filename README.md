@@ -126,6 +126,3 @@ Things to consider:
 - While building this simulated workflow, it was interesting to note that the ideal happy path workflow was easy to produce the required results. But, when I got to developing the failure cases, I had to think of the edge case: How does the system handle inconsistent payloads where the overall summary is verified but one or more of the individual checks have failed? Should it check for both flags before updating the HRMS system? How should it handle if one is true and the other is not?
 - This was when I discovered the concept of defensive validation, while testing the failure path. The code needs to work for real life scenarios, in regulated industries, where the inconsistency in the data upstream does not cause downstream compliance issues.
 - How much of enterprise integration is about system boundaries and assumptions between systems, not about code complexity? - Do not know.
-
-
-This paragraph is the one a reader will remember.
