@@ -85,36 +85,47 @@ curl http://localhost:8000/contractors
 - No handling of duplicate events if the same BGV completion fires twice
 
 ## What I Learned
-HR raises a contractor requirement
-Inside SAP HCM or SuccessFactors. A position is created. A contractor record is initiated. This lives entirely inside the client's enterprise system.
+Step 1: HR raises a contractor requirement.
+Inside SAP HCM or SuccessFactors. A position is created. A contractor record is initiated. 
+This lives entirely inside the client's enterprise system.
 ↓
-Contractor is invited to BGV Gateway
-HR sends a WhatsApp / SMS / email link. Contractor opens their hosted page on their phone and begins the verification journey — Aadhaar, PAN, PF UAN, education, prior employment.
+Step 2: Contractor is invited to BGV Gateway.
+HR sends a WhatsApp / SMS / email link. 
+Contractor opens their hosted page on their phone and begins the verification journey — Aadhaar, PAN, PF UAN, education, prior employment.
 ↓
-Contractor completes document upload
+Step 3: Contractor completes document upload.
 BGV Gateway validates documents in real time using OCR and government APIs.
 ↓
-Verification result appears in BGV Console
-HR manager logs into dashboard. Sees: 7/7 checks passed. Verification complete. The result exists — but only inside BGV system.
+Step 4: Verification result appears in BGV Console.
+HR manager logs into dashboard. Sees: 7/7 checks passed. Verification complete. 
+The result exists — but only inside BGV system.
+
 TIME-TO-ACCESS CLOCK STARTS HERE
 ↓   manual step
-HR manually updates SAP / HRMS
-Someone logs into SAP separately. Finds the contractor record. Changes onboarding status to "BGV Cleared." This could take minutes or days depending on workload, shift patterns, and whether the right person is available.
+
+Step 5: HR manually updates SAP / HRMS.
+Someone logs into SAP separately, finds the contractor record,changes onboarding status to "BGV Cleared." 
+This could take minutes or days depending on workload, shift patterns, and whether the right person is available.
+
 THE GAP — this step should not exist
+
 ↓   manual step
-Access control system is updated
-Gate / site access system (often integrated with SAP) reads the updated status and enables the contractor's badge or biometric entry. Can't happen until Step 5 is done.
+Step 6: Access control system is updated.
+Gate / site access system (often integrated with SAP) reads the updated status and enables the contractor's badge or biometric entry. 
+Can't happen until the above step is done.
 ↓
-Contractor gains physical site access
+Step 7: Contractor gains physical site access
 The job is done. But the Time-to-Access — from Step 4 to Step 7 — could be hours or days. In a manufacturing plant running shifts, a delayed contractor means a delayed shift.
 TIME-TO-ACCESS CLOCK ENDS HERE
 
-Steps 4 to 6 is the gap I am building a solution for. The fix is: When BGV verification completes, it automatically fires a webhook that updates the SAP contractor record — no human in the loop. Time-to-Access collapses from hours or days to seconds.
+Steps 4 to 6 is the gap I am building a solution for. 
+The fix is: When BGV verification completes, it automatically fires a webhook that updates the SAP contractor record — no human in the loop. 
+Time-to-Access collapses from hours or days to seconds.
 
-[One honest paragraph in your own voice. Write this last. Things to consider:
-- What surprised you about how simple the happy path was vs how much complexity lives in failure handling
-- Discovering defensive validation accidentally while testing the failure path
-- How much of enterprise integration is about system boundaries and assumptions between systems, not about code complexity
-- Anything that was harder than you expected]
+Things to consider:
+- While building this simulated workflow, it was interesting to note that the ideal happy path workflow was easy to produce the required results. But, when I got to developing the failure cases, I had to think of the edge case: How does the system handle inconsistent payloads where the overall summary is verified but one or more of the individual checks have failed? Should it check for both flags before updating the HRMS system? How should it handle if one is true and the other is not?
+- This was when I discovered the concept of defensive validation, while testing the failure path. The code needs to work for real life scenarios, in regulated industries, where the inconsistency in the data upstream does not cause downstream compliance issues.
+- How much of enterprise integration is about system boundaries and assumptions between systems, not about code complexity? - Do not know.
+
 
 This paragraph is the one a reader will remember.
